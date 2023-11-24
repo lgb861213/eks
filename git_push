@@ -1,0 +1,5 @@
+ns.yaml
+
+git commit -m "Add the yaml file that creates the namespace"
+
+git push -u origin main
