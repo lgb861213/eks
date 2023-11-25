@@ -3,6 +3,8 @@
 
 #replace your eks cluster name
 clusterName=aloda-test
+#get aws account id
+awsId=$(aws sts get-caller-identity --query "Account" --output text)
 #get oidc  endpoint
 printf "正在获取eks 集群的oidc endpoint地址\n"
 
@@ -39,6 +41,9 @@ echo '{
     }
   ]
 }' | sed "s/A357D6680CACC3FE811997EAE0BEDDCD/$oidc_id/g" | tee $role_trust_file
+
+# 替换 AWS 账号 ID
+sed -i "s/195495575045/$awsId/g" $role_trust_file
 
 #set IAM Role Name to want to create.
 export ebs_csi_role_name=AmazonEKS_EBS_CSI_DriverRole-eks
