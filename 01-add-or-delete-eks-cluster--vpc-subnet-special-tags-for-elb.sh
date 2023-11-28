@@ -28,11 +28,13 @@ PRIVATE_SUBNETS=$(aws ec2 describe-subnets \
 echo "获取到的私有子网信息...."
 #echo $PRIVATE_SUBNETS
 
-TAG_KEY="kubernetes.io/role/elb"
+PUBLIC_SUBNETS_TAG_KEY="kubernetes.io/role/elb"
 TAG_VALUE="1"
+PRIVATE_SUBNETS_TAG_KEY="kubernetes.io/role/internal-elb"
 #为公有子网打上tag
 # 删除字符串中的引号和方括号，并使用逗号分隔子网 ID
-SUBNET_IDS_CLEAN=$(echo $PUBLIC_SUBNETS | sed 's/[][]//g' | sed 's/"//g' | sed 's/,/ /g')
+PUBLIC_SUBNET_IDS_CLEAN=$(echo $PUBLIC_SUBNETS | sed 's/[][]//g' | sed 's/"//g' | sed 's/,/ /g')
+PRIVATE_SUBNET_IDS_CLEAN=$(echo $PRIVATE_SUBNETS | sed 's/[][]//g' | sed 's/"//g' | sed 's/,/ /g')
 #echo $SUBNET_IDS_CLEAN
 # 循环遍历子网 ID 数组
 # 函数：为子网添加标签
@@ -68,13 +70,19 @@ read -p "请输入要执行的操作（add/del）: " OPERATION
 # 根据操作执行相应的函数
 case $OPERATION in
   "add")
-    for SUBNET_ID in $SUBNET_IDS_CLEAN; do
-      add_subnet_tag $SUBNET_ID $TAG_KEY $TAG_VALUE
+    for SUBNET_ID in $PUBLIC_SUBNET_IDS_CLEAN; do
+      add_subnet_tag $SUBNET_ID $PUBLIC_SUBNETS_TAG_KEY $TAG_VALUE
+    done
+    for SUBNET_ID in $PRIVATE_SUBNET_IDS_CLEAN; do
+      add_subnet_tag $SUBNET_ID $PRIVATE_SUBNETS_TAG_KEY $TAG_VALUE
     done
     ;;
   "del")
-    for SUBNET_ID in $SUBNET_IDS_CLEAN; do
-      remove_subnet_tag $SUBNET_ID $TAG_KEY $TAG_VALUE
+    for SUBNET_ID in $PUBLIC_SUBNET_IDS_CLEAN; do
+      remove_subnet_tag $SUBNET_ID $PUBLIC_SUBNETS_TAG_KEY $TAG_VALUE
+    done
+    for SUBNET_ID in $PRIVATE_SUBNET_IDS_CLEAN; do
+      remove_subnet_tag $SUBNET_ID $PRIVATE_SUBNETS_TAG_KEY $TAG_VALUE
     done
     ;;
   *)
