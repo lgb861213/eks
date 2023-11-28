@@ -20,12 +20,13 @@ PUBLIC_SUBNETS=`aws ec2 describe-route-tables \
 #echo ${PUBLIC_SUBNETS}
 #获取关联的私有子网信息
 #参考https://stackoverflow.com/questions/48830793/aws-vpc-identify-private-and-public-subnet获取公有子网和私有子网信息
+echo "正在获取私有子网信息..."
 PRIVATE_SUBNETS=$(aws ec2 describe-subnets \
   --filter Name=vpc-id,Values=${VPC_ID} \
   --query 'Subnets[].SubnetId' \
   | jq -c '[ .[] | select( . as $i | '${PUBLIC_SUBNETS}' | index($i) | not) ]')
 #获取私有子网信息
-echo "获取到的私有子网信息...."
+#echo "获取到的私有子网信息...."
 #echo $PRIVATE_SUBNETS
 
 TAG_KEY="kubernetes.io/role/elb"
