@@ -1,4 +1,4 @@
-ns.yaml
+git add ./*
 
 git commit -m "Add the yaml file that creates the namespace"
 
