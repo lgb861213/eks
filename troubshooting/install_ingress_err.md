@@ -27,3 +27,6 @@ Target group 'arn:aws:elasticloadbalancing:us-east-1:awsId:targetgroup/k8s-defau
 
 参考https://github.com/kubernetes-sigs/aws-load-balancer-controller/issues/3037
 
+Q4: 创建ingress报The Ingress "aws-ingress" is invalid: spec.rules[0].host: Invalid value: "*": a wildcard DNS-1123 subdomain must start with '*.', followed by a valid DNS subdomain, which must consist of lower case alphanumeric characters, '-' or '.' and end with an alphanumeric character (e.g. '*.example.com', regex used for validation is '\*\.[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
+
+
